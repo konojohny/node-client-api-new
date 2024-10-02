@@ -6,4 +6,4 @@ const routes = express.Router();
 routes.route("/").get((req, res) => res.status(200).send("Clients API"));
 routes.use(clients);
 
- export default routes;
+export default routes;

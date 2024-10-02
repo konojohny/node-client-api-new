@@ -1,59 +1,52 @@
 import clientServices from "../services/services.js";
 
-class clientController{
-    static async listClients(req, res){
-        try{
-            const listClient = await clientServices.list();
-
+class clientController {
+    static async listClients(req, res, next) {
+        try {
+            const listClient = await clientServices.list(next);
             res.status(200).json(listClient);
-        }catch(error){
-            res.status(400).send(error.message);
+        } catch (error) {
+            next(error);
         }
     }
 
-    static async listClientsId(req, res){
-        try{
-            const listClient = await clientServices.listId(req.params.id);
-
+    static async listClientsId(req, res, next) {
+        try {
+            const listClient = await clientServices.listId(req.params.id, next);
             res.status(200).json(listClient);
-        }catch(error){
-            res.status(400).send(error.message);
+        } catch (error) {
+            next(error);
         }
     }
 
-    static async createClient(req, res){
-        try{
-            const {name, cpf, dateBirth} = req.body;
-
-            const createdClient = await clientServices.create(name, cpf, dateBirth);
-
-            res.status(201).send({message: "Cliente Criado", client: createdClient});
-        }catch(error){
-            return res.status(400).send(error.message)
-        }
-    }
-
-    static async updateClient(req, res){
-        try{
+    static async createClient(req, res, next) {
+        try {
             const { name, cpf, dateBirth } = req.body;
-
-            const result = await clientServices.update(req.params.id, name, cpf, dateBirth)
-
-            res.status(201).send({message: "Cliente Atualizado", client: result});
-        }catch(error){
-            return res.status(400).send(error.message);
+            const createdClient = await clientServices.create(name, cpf, dateBirth, next);
+            res.status(201).send({ message: "Cliente Criado", data: createdClient });
+        } catch (error) {
+            next(error);
         }
     }
 
-    static async deleteClient(req, res){
-        try{
-            const result = await clientServices.deleteClientId(req.params.id)
-    
-            res.status(201).send({message: "Cliente Deletado", client: result});
-        }catch(error){
-            return res.status(400).send(error.message)
+    static async updateClient(req, res, next) {
+        try {
+            const { name, cpf, dateBirth } = req.body;
+            const result = await clientServices.update(req.params.id, name, cpf, dateBirth, next);
+            res.status(201).send({ message: "Cliente Atualizado", data: result });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async deleteClient(req, res, next) {
+        try {
+            const result = await clientServices.deleteClientId(req.params.id, next);
+            res.status(201).send({ message: "Cliente Deletado", data: result });
+        } catch (error) {
+            next(error);
         }
     }
 }
 
-export default clientController
+export default clientController;
